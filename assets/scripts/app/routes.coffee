@@ -41,8 +41,8 @@ Travis.Router = Ember.Router.extend
   saveLineNumberHash: (path) ->
     Ember.run.next this, ->
       path = path || @get('location').getURL()
-      if match = path.match(/#L\d+$/)
-        @set 'repoController.lineNumberHash', match[0]
+      if match = path.match(/#L(\d+)$/)
+        @set 'repoController.lineNumber', match[1]
 
   reload: ->
     console.log 'Triggering reload'

@@ -168,8 +168,7 @@
     ).property('job.id', 'build.jobs.firstObject.id', 'build.jobs.length')
 
     plainTextLogUrl: (->
-      if id = @get('jobIdForLog')
-        Travis.Urls.plainTextLog(id)
+      Travis.Urls.plainTextLog(id) if id = @get('jobIdForLog')
     ).property('jobIdForLog')
 
     displayCancelBuild: (->

@@ -1,20 +1,14 @@
-{{view.logSubscriber}}
-
 {{#if view.job.log.isLoaded}}
-  {{! this #with + #if is needed because I want to rerender 'pre' when log changes to properly clean it up,
-      this should probably be refactored to use container view}}
-  {{#with view.job.log}}
-    {{view Travis.PreView logBinding="view.context.log" logUrlBinding="view.logUrl"}}
-  {{/with}}
+  {{view Travis.LogPreView logBinding="view.job.log"}}
 
-  {{#if sponsor.name}}
+  {{#if view.job.sponsor.name}}
     <p class="sponsor">
-    {{t builds.messages.sponsored_by}}
-      <a {{bindAttr href="sponsor.url"}}>{{sponsor.name}}</a>
+      {{t builds.messages.sponsored_by}}
+      <a {{bindAttr href="sponsor.url"}}>{{view.job.sponsor.name}}</a>
     </p>
   {{/if}}
-
   <a href='#' class="to-top" {{action toTop target="view"}}>To top</a>
+
 {{else}}
   <div id="log" class="loading">
     <span>Loading</span>
