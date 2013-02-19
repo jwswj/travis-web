@@ -1,20 +1,19 @@
 require 'travis/model'
 
 @Travis.Log = Em.Object.extend
-  version: 1 # used to refresh log on requeue
-  body: null
+  version: 0 # used to refresh log on requeue
   isLoaded: false
-  parts: Ember.ArrayProxy.create(content: [])
 
   init: ->
     @_super.apply(@, arguments)
+    @clear()
     @fetch(jobId) if jobId = @get('job.id')
 
   append: (part) ->
     @get('parts').pushObject(part)
 
   clear: ->
-    @set('body', '')
+    @set('parts', Ember.ArrayProxy.create(content: []))
     @incrementProperty('version')
 
   fetch: (jobId) ->
@@ -26,17 +25,17 @@ require 'travis/model'
           # Firefox can't see the Location header on the xhr response, probably due to
           # the wrong (?) status code 204. Should be some redirect code but that doesn't
           # seem to work with CORS.
-          logUrl = xhr.getResponseHeader('Location') || @s3Url("/jobs/#{jobId}/log.txt")
-          $.ajax(url: logUrl, type: 'GET', success: (body) => @setBody(body))
+          url = xhr.getResponseHeader('Location') || @s3Url(jobId)
+          $.ajax(url: url, type: 'GET', success: (body) => @setBody(body))
         else
           @setBody(body)
-
-  s3Url: (path) ->
-    endpoint = Travis.config.api_endpoint
-    staging = if endpoint.match(/-staging/) then '-staging' else ''
-    host = Travis.config.api_endpoint.replace(/^https?:\/\//, '').split('.').slice(-2).join('.')
-    "https://s3.amazonaws.com/archive#{staging}.#{host}#{path}"
 
   setBody: (body) ->
     @get('parts').pushObject(body)
     @set('isLoaded', true)
+
+  s3Url: (id) ->
+    endpoint = Travis.config.api_endpoint
+    staging = if endpoint.match(/-staging/) then '-staging' else ''
+    host = Travis.config.api_endpoint.replace(/^https?:\/\//, '').split('.').slice(-2).join('.')
+    "https://s3.amazonaws.com/archive#{staging}.#{host}#{path}/jobs/#{jobId}/log.txt"

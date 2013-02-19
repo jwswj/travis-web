@@ -1,34 +1,32 @@
-I18nBoundView = Ember.View.extend Ember._Metamorph, {
-
+I18nBoundView = Ember.View.extend Ember._Metamorph,
   key: null,
 
-  valueDidChange: ->
-    return if this.morph.isRemoved()
-    this.morph.html(this.valueForRender())
+  init: ->
+    @_super()
+    Travis.addObserver('locale', @, 'valueDidChange')
 
   valueForRender: ->
-    new Handlebars.SafeString I18n.t(this.key)
+    new Handlebars.SafeString I18n.t(@key)
 
-  init: ->
-    this._super()
-    Travis.addObserver('locale', this, 'valueDidChange')
+  valueDidChange: ->
+    @morph.html(@valueForRender()) unless @morph.isRemoved()
 
   didInsertElement: ->
-    this.valueDidChange()
+    @valueDidChange()
 
   destroy: ->
-    Travis.removeObserver('locale', this, 'valueDidChange')
-    this._super()
+    Travis.removeObserver('locale', @, 'valueDidChange')
+    @_super()
 
   render: (buffer) ->
-    buffer.push(this.valueForRender())
-}
+    buffer.push(@valueForRender())
+
 
 Ember.Handlebars.registerHelper 't', (key, options) ->
   view = options.data.view
   bindView = view.createChildView(I18nBoundView, { key: key })
   view.appendChild(bindView)
-  # dont write any content from this helper, let the child view
+  # dont write any content from @helper, let the child view
   # take care of itself.
   false
 

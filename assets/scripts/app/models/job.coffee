@@ -72,8 +72,7 @@ require 'travis/model'
     Travis.ajax.post '/requests', job_id: @get('id')
 
   appendLog: (text) ->
-    if log = @get('log')
-      log.append(text)
+    @get('log').append(text)
 
   subscribe: ->
     if id = @get('id')

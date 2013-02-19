@@ -17,19 +17,14 @@ require 'log'
     init: ->
       @_super.apply(this, arguments)
       @scroll = new Log.Scroll
-      @engine = @buildLog()
-
-    buildLog: ->
-      # TODO move to a factory in Log
-      log = new Log
-      log.listeners.push(new Log.FragmentRenderer)
-      log.listeners.push(new Log.Folds)
-      log.listeners.push(@scroll)
-      log
+      @engine = @createLog()
 
     rerender: ->
       @_super.apply(this, arguments)
-      @engine = @buildLog()
+      @engine = @createLog()
+
+    createLog: ->
+      Log.create(listeners: [new Log.FragmentRenderer, new Log.Folds, @scroll])
 
     didInsertElement: ->
       @_super.apply(this, arguments)
