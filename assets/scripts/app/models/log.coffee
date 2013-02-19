@@ -6,9 +6,9 @@ require 'travis/model'
   isLoaded: false
   parts: Ember.ArrayProxy.create(content: [])
 
-  jobIdObserver: (->
+  init: ->
+    @_super.apply(@, arguments)
     @fetch(jobId) if jobId = @get('job.id')
-  ).observes('job.id')
 
   append: (part) ->
     @get('parts').pushObject(part)

@@ -95,5 +95,11 @@ Log.Scroll.prototype = $.extend new Log.Listener,
     if element = $("#log p:nth-child(#{@number})")
       $('#main').scrollTop(0)
       $('html, body').scrollTop(element.offset()?.top) # weird, html works in chrome, body in firefox
+      @highlight(element)
       @number = undefined
+
+  highlight: (element) ->
+    $('#log p.highlight').removeClass('highlight')
+    $(element).addClass('highlight')
+
 
