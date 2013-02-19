@@ -8,6 +8,10 @@ require 'log'
       job.subscribe() if (job = @get('job')) && !job.get('isFinished')
     ).observes('job', 'job.state')
 
+    plainTextLogUrl: (->
+      Travis.Urls.plainTextLog(id) if id = @get('job.log.id')
+    ).property('job.log.id')
+
     toTop: () ->
       $(window).scrollTop(0)
 
@@ -54,10 +58,6 @@ require 'log'
     toggleTailing: (event) ->
       Travis.app.tailing.toggle()
       event.preventDefault()
-
-    plainTextLogUrl: (->
-      Travis.Urls.plainTextLog(id) if id = @get('log.id')
-    ).property('log.id')
 
     lineNumbers: ->
       $('#log').on 'mouseenter', 'a', ->

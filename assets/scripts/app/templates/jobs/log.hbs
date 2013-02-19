@@ -5,6 +5,13 @@
     {{view Travis.LogPreView logBinding="view.job.log"}}
   {{/with}}
 
+  {{#if view.job.log.isLimited}}
+    <p class="warning">
+      This log is too long to be displayed. Please reduce the verbosity of your
+      build or download the the <a {{bindAttr href="view.plainTextLogUrl"}}>raw log</a>.
+    </p>
+  {{/if}}
+
   {{#if view.job.sponsor.name}}
     <p class="sponsor">
       {{t builds.messages.sponsored_by}}
