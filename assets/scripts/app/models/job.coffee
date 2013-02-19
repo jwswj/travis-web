@@ -71,9 +71,6 @@ require 'travis/model'
   requeue: ->
     Travis.ajax.post '/requests', job_id: @get('id')
 
-  appendLog: (text) ->
-    @get('log').append(text)
-
   subscribe: ->
     if id = @get('id')
       Travis.app.pusher.subscribe "job-#{id}"

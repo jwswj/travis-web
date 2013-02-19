@@ -29,7 +29,7 @@ jQuery.support.cors = true
       options.data = JSON.stringify(options.data)
 
     if method != 'GET' && method != 'HEAD'
-      options.contentType = options.contentType || 'application/json; charset=utf-8'
+      options.contentType ||= 'application/json; charset=utf-8'
 
     success = options.success || (->)
     options.success = (data) =>
@@ -43,4 +43,4 @@ jQuery.support.cors = true
       delete data.flash
       error.apply(this, arguments)
 
-    $.ajax($.extend(options, Travis.ajax.DEFAULT_OPTIONS))
+    $.ajax($.extend(Travis.ajax.DEFAULT_OPTIONS, options))

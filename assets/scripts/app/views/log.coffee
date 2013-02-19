@@ -49,7 +49,8 @@ require 'log'
     partsAdded: (parts, start, _, added) ->
       start ||= 0
       added ||= parts.length
-      @engine.set(start + i, part) for part, i in parts.slice(start, start + added)
+      console.log(parts.slice(start, start + added))
+      @engine.set(part.number, part.content) for part, i in parts.slice(start, start + added)
 
     toggleTailing: (event) ->
       Travis.app.tailing.toggle()
