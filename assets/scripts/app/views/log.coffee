@@ -8,10 +8,6 @@ require 'log'
       job.subscribe() if (job = @get('job')) && !job.get('isFinished')
     ).observes('job', 'job.state')
 
-    plainTextLogUrl: (->
-      Travis.Urls.plainTextLog(id) if id = @get('job.log.id')
-    ).property('job.log.id')
-
     toTop: () ->
       $(window).scrollTop(0)
 
@@ -21,6 +17,7 @@ require 'log'
     init: ->
       @_super.apply(this, arguments)
       @scroll = new Log.Scroll
+      @limit  = new Log.Limit
       @engine = @createLog()
 
     rerender: ->
@@ -28,7 +25,7 @@ require 'log'
       @engine = @createLog()
 
     createLog: ->
-      Log.create(listeners: [new Log.FragmentRenderer, new Log.Folds, @scroll])
+      Log.create(listeners: [@limit, new Log.FragmentRenderer, new Log.Folds, @scroll])
 
     didInsertElement: ->
       @_super.apply(this, arguments)
@@ -51,9 +48,19 @@ require 'log'
     ).observes('controller.lineNumber')
 
     partsAdded: (parts, start, _, added) ->
-      start ||= 0
-      added ||= parts.length
-      @engine.set(part.number, part.content) for part, i in parts.slice(start, start + added)
+      unless @get('isLimited')
+        start ||= 0
+        added ||= parts.length
+        @engine.set(part.number, part.content) for part, i in parts.slice(start, start + added)
+        @propertyDidChange('isLimited')
+
+    isLimited: (->
+      @limit.isLimited()
+    ).property()
+
+    plainTextLogUrl: (->
+      Travis.Urls.plainTextLog(id) if id = @get('log.job.id')
+    ).property('job.log.id')
 
     toggleTailing: (event) ->
       Travis.app.tailing.toggle()
@@ -96,5 +103,17 @@ Log.Scroll.prototype = $.extend new Log.Listener,
   highlight: (element) ->
     $('#log p.highlight').removeClass('highlight')
     $(element).addClass('highlight')
+
+Log.Limit = ->
+Log.Limit.prototype = $.extend new Log.Listener,
+  MAX_LINES: 5000
+  count: 0
+
+  insert: (log, after, lines) ->
+    @count += lines.length
+    lines.length = @MAX_LINES if lines.length > @MAX_LINES
+
+  isLimited: ->
+    @count > @MAX_LINES
 
 

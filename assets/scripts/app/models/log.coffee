@@ -1,8 +1,6 @@
 require 'travis/model'
 
 @Travis.Log = Em.Object.extend
-  MAX_LENGTH: 256000
-
   version: 0 # used to refresh log on requeue
   isLoaded: false
   length: 0
@@ -23,14 +21,7 @@ require 'travis/model'
     @incrementProperty('version')
 
   append: (part) ->
-    length = part.content.length
-    part.content = part.content.slice(0, @MAX_LENGTH) if length > @MAX_LENGTH
-    @get('parts').pushObject(part) unless @get('isLimited')
-    @set('length', @get('length') + length)
-
-  isLimited: (->
-    @get('length') > @MAX_LENGTH
-  ).property('length')
+    @get('parts').pushObject(part)
 
   loadParts: (parts) ->
     @append(part) for part in parts
