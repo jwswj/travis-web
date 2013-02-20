@@ -5,11 +5,10 @@ Travis.ReposController = Ember.ArrayController.extend
   isLoadedBinding: 'content.isLoaded'
 
   init: ->
-    Ember.run.later(@updateTimes.bind(this), Travis.INTERVALS.updateTimes)
+    # Ember.run.later(@updateTimes.bind(this), Travis.INTERVALS.updateTimes)
 
   updateTimes: ->
-    if content = @get('content')
-      content.forEach (r) -> r.updateTimes()
+    repo.updateTimes() for repo in repos if repos = @get('content')
     Ember.run.later(@updateTimes.bind(this), Travis.INTERVALS.updateTimes)
 
   activate: (tab, params) ->
