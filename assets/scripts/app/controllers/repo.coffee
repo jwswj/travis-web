@@ -3,7 +3,7 @@ Travis.RepoController = Travis.Controller.extend
 
   init: ->
     @_super.apply this, arguments
-    # Ember.run.later(@updateTimes.bind(this), Travis.INTERVALS.updateTimes)
+    Ember.run.later(@updateTimes.bind(this), Travis.INTERVALS.updateTimes)
     @set 'builds', Em.ArrayProxy.create(Em.SortableMixin,
       isLoadedBinding: 'content.isLoaded'
       sortProperties: ['number']
@@ -17,9 +17,9 @@ Travis.RepoController = Travis.Controller.extend
     )
 
   updateTimes: ->
-    build.updateTimes() for build in builds if builds = @get('builds')
+    build.updateTimes() for build in builds.toArray() if builds = @get('builds')
     build.updateTimes() if build = @get('build')
-    job.updateTimes()   for job in jobs if build && jobs = build.get('jobs')
+    job.updateTimes()   for job in jobs.toArray() if build && jobs = build.get('jobs')
     Ember.run.later(@updateTimes.bind(this), Travis.INTERVALS.updateTimes)
 
   activate: (action) ->
