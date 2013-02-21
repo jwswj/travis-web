@@ -1,13 +1,13 @@
 require 'travis/model'
 
 @Travis.Log = Em.Object.extend
+  parts: Ember.ArrayProxy.create(content: [])
   version: 0 # used to refresh log on requeue
   isLoaded: false
   length: 0
 
   init: ->
     @_super.apply(@, arguments)
-    @clear()
     @fetch(id) if id = @get('job.id')
 
   fetch: (id) ->
@@ -28,6 +28,7 @@ require 'travis/model'
     @set('isLoaded', true)
 
   loadText: (text) ->
+    number = -1
     @append(number: 0, content: text)
     @set('isLoaded', true)
 

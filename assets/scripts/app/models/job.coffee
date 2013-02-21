@@ -1,7 +1,7 @@
 require 'travis/model'
 
 @Travis.Job = Travis.Model.extend Travis.DurationCalculations,
-  repoId:   DS.attr('number', key: 'repository_id')
+  repoId:         DS.attr('number', key: 'repository_id')
   buildId:        DS.attr('number')
   commitId:       DS.attr('number')
   logId:          DS.attr('number')
@@ -19,8 +19,8 @@ require 'travis/model'
   commit: DS.belongsTo('Travis.Commit',   key: 'commit_id')
 
   log: ( ->
-    Travis.Log.create(job: this)
-  ).property()
+    Travis.Log.create(job: this) if @get('id')
+  ).property('id')
 
   repoSlug: (->
     @get('repositorySlug')

@@ -4,7 +4,6 @@
     buildsBinding: 'controller.builds'
 
     isPullRequestsList: (->
-      console.log @get('controller.tab')
       @get('controller.tab') == 'pull_requests'
     ).property('controller.tab')
 
