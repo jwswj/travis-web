@@ -2,7 +2,7 @@
   {{! this #with + #if is needed because I want to rerender 'pre' when log changes to properly clean it up,
       this should probably be refactored to use container view}}
   {{#with view.job.log}}
-    {{view Travis.LogPreView logBinding="view.job.log"}}
+    {{view Travis.LogPreView jobBinding="view.job"}}
   {{/with}}
 
   {{#if view.job.sponsor.name}}

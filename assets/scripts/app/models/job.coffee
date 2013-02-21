@@ -20,7 +20,7 @@ require 'travis/model'
 
   log: ( ->
     Travis.Log.create(job: this) if @get('id')
-  ).property('id')
+  ).property()
 
   repoSlug: (->
     @get('repositorySlug')

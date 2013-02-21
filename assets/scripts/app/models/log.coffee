@@ -1,12 +1,12 @@
 require 'travis/model'
 
 @Travis.Log = Em.Object.extend
-  parts: Ember.ArrayProxy.create(content: [])
   version: 0 # used to refresh log on requeue
   isLoaded: false
   length: 0
 
   fetch: ->
+    @set('parts', Ember.ArrayProxy.create(content: []))
     handlers =
       json: (json) => @loadParts(json['log']['parts'])
       text: (text) => @loadText(text)

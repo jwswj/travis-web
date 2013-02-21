@@ -17,27 +17,32 @@ require 'log'
 
   LogPreView: Em.View.extend
     templateName: 'jobs/pre'
+    logBinding: 'job.log'
 
     init: ->
       @_super.apply(this, arguments)
-      @createLog()
 
     rerender: ->
       @_super.apply(this, arguments)
-      @createLog()
-
-    createLog: ->
-      @scroll = new Log.Scroll
-      @limit  = new Log.Limit
-      @engine = Log.create(listeners: [@limit, new Log.FragmentRenderer, new Log.Folds, @scroll])
+      @createEngine()
 
     didInsertElement: ->
-      parts = @get('log.parts')
-      parts.addArrayObserver(@, didChange: 'partsAdded', willChange: ->)
-      @partsAdded(parts.slice(0))
+      @createEngine()
+      @observeParts()
       @lineNumbers()
       @scroll.set(@get('controller.lineNumber'))
       @folds()
+
+    createEngine: ->
+      @scroll = new Log.Scroll
+      @limit  = new Log.Limit
+      @propertyDidChange('isLimited')
+      @engine = Log.create(listeners: [@limit, new Log.FragmentRenderer, new Log.Folds, @scroll])
+
+    observeParts: ->
+      parts = @get('log.parts')
+      parts.addArrayObserver(@, didChange: 'partsAdded', willChange: ->)
+      @partsAdded(parts.slice(0))
 
     willDestroy: ->
       @get('log.parts').removeArrayObserver(@, didChange: 'partsAdded', willChange: ->)
@@ -58,7 +63,7 @@ require 'log'
         @propertyDidChange('isLimited')
 
     isLimited: (->
-      @limit.isLimited()
+      @limit && @limit.isLimited()
     ).property()
 
     plainTextLogUrl: (->
