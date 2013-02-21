@@ -45,7 +45,10 @@ require 'log'
       @partsAdded(parts.slice(0))
 
     willDestroy: ->
-      @get('log.parts').removeArrayObserver(@, didChange: 'partsAdded', willChange: ->)
+      if parts = @get('log.parts')
+        parts.removeArrayObserver(@, didChange: 'partsAdded', willChange: ->)
+      else
+        console.log('can not remove observer from parts because parts is undefined')
 
     versionObserver: (->
       @rerender()
