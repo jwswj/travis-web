@@ -6,15 +6,11 @@ require 'travis/model'
   isLoaded: false
   length: 0
 
-  init: ->
-    @_super.apply(@, arguments)
-    @fetch(id) if id = @get('job.id')
-
-  fetch: (id) ->
+  fetch: ->
     handlers =
       json: (json) => @loadParts(json['log']['parts'])
       text: (text) => @loadText(text)
-    Travis.Log.Request.create(id: id, handlers: handlers).run()
+    Travis.Log.Request.create(id: id, handlers: handlers).run() if id = @get('job.id')
 
   clear: ->
     @set('parts', Ember.ArrayProxy.create(content: []))
@@ -44,7 +40,7 @@ Travis.Log.Request = Em.Object.extend
 
   handle: (body, status, xhr) ->
     if xhr.status == 204
-      $.ajax(url: redirectTo(xhr), type: 'GET', success: @handlers.text)
+      $.ajax(url: @redirectTo(xhr), type: 'GET', success: @handlers.text)
     else if @isJson(xhr, body)
       @handlers.json(JSON.parse(body))
     else

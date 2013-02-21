@@ -11,24 +11,27 @@ require 'log'
     toTop: () ->
       $(window).scrollTop(0)
 
+    didInsertElement: ->
+      @get('job.log').fetch()
+
+
   LogPreView: Em.View.extend
     templateName: 'jobs/pre'
 
     init: ->
       @_super.apply(this, arguments)
-      @scroll = new Log.Scroll
-      @limit  = new Log.Limit
-      @engine = @createLog()
+      @createLog()
 
     rerender: ->
       @_super.apply(this, arguments)
-      @engine = @createLog()
+      @createLog()
 
     createLog: ->
-      Log.create(listeners: [@limit, new Log.FragmentRenderer, new Log.Folds, @scroll])
+      @scroll = new Log.Scroll
+      @limit  = new Log.Limit
+      @engine = Log.create(listeners: [@limit, new Log.FragmentRenderer, new Log.Folds, @scroll])
 
     didInsertElement: ->
-      @_super.apply(this, arguments)
       parts = @get('log.parts')
       parts.addArrayObserver(@, didChange: 'partsAdded', willChange: ->)
       @partsAdded(parts.slice(0))
