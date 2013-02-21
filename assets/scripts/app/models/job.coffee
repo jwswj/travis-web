@@ -18,7 +18,7 @@ require 'travis/model'
   build:  DS.belongsTo('Travis.Build',    key: 'build_id')
   commit: DS.belongsTo('Travis.Commit',   key: 'commit_id')
 
-  log: ( ->
+  log: (->
     Travis.Log.create(job: this) if @get('id')
   ).property()
 
