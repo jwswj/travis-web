@@ -19,7 +19,9 @@ require 'travis/model'
   commit: DS.belongsTo('Travis.Commit',   key: 'commit_id')
 
   log: (->
-    Travis.Log.create(job: this) if @get('id')
+    if id = @get('id')
+      console.log("creating a new log for job #{id}")
+      Travis.Log.create(job: this)
   ).property()
 
   repoSlug: (->

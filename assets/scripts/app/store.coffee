@@ -98,7 +98,9 @@ Travis.Store = DS.Store.extend
     if event == 'job:log'
       data = data.job
       log  = @find(Travis.Job, data.id)?.get('log')
-      log.appendLog(number: data.number, content: data._log) if log
+      part = { number: parseInt(data.number), content: data._log }
+      console.log "job:log event for log: log #{log?.id}", part
+      log.append(part) if log
     else if data[type.singularName()]
       @_loadOne(this, type, data)
     else if data[type.pluralName()]

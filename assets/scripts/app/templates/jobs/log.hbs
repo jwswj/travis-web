@@ -1,9 +1,9 @@
 {{#if view.job.log.isLoaded}}
   {{! this #with + #if is needed because I want to rerender 'pre' when log changes to properly clean it up,
       this should probably be refactored to use container view}}
-  {{#with view.job.log}}
-    {{view Travis.LogPreView jobBinding="view.job"}}
-  {{/with}}
+  {{!#with view.job.log}}
+  {{!/with}}
+  {{view Travis.LogPreView jobBinding="view.job"}}
 
   {{#if view.job.sponsor.name}}
     <p class="sponsor">

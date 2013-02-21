@@ -5,14 +5,19 @@ require 'travis/model'
   isLoaded: false
   length: 0
 
-  fetch: ->
+  init: ->
+    console.log("log created, setting log parts to a new array proxy")
     @set('parts', Ember.ArrayProxy.create(content: []))
+    @fetch()
+
+  fetch: ->
     handlers =
       json: (json) => @loadParts(json['log']['parts'])
       text: (text) => @loadText(text)
     Travis.Log.Request.create(id: id, handlers: handlers).run() if id = @get('job.id')
 
   clear: ->
+    console.log("clear log!")
     @set('parts', Ember.ArrayProxy.create(content: []))
     @incrementProperty('version')
 
@@ -27,12 +32,14 @@ require 'travis/model'
     number = -1
     @append(number: 0, content: text)
     @set('isLoaded', true)
+    console.log("log is loaded")
 
 Travis.Log.Request = Em.Object.extend
   HEADERS:
     accept: 'application/vnd.travis-ci.2+json; chunked=true; version=2, text/plain; version=2'
 
   run: ->
+    console.log "fetching: /jobs/#{@id}/log?cors_hax=true"
     Travis.ajax.ajax "/jobs/#{@id}/log?cors_hax=true", 'GET',
       dataType: 'text'
       headers: @HEADERS

@@ -11,8 +11,8 @@ require 'log'
     toTop: () ->
       $(window).scrollTop(0)
 
-    didInsertElement: ->
-      @get('job.log').fetch()
+    # didInsertElement: ->
+    #   @get('job.log').fetch()
 
 
   LogPreView: Em.View.extend
@@ -40,6 +40,9 @@ require 'log'
       @engine = Log.create(listeners: [@limit, new Log.FragmentRenderer, new Log.Folds, @scroll])
 
     observeParts: ->
+      console.log(@get('job'))
+      console.log(@get('log'))
+      console.log(@get('log.parts'))
       parts = @get('log.parts')
       parts.addArrayObserver(@, didChange: 'partsAdded', willChange: ->)
       @partsAdded(parts.slice(0))
@@ -50,9 +53,9 @@ require 'log'
       else
         console.log('can not remove observer from parts because parts is undefined')
 
-    versionObserver: (->
-      @rerender()
-    ).observes('log.version')
+    # versionObserver: (->
+    #   @rerender()
+    # ).observes('log.version')
 
     lineNumberObserver: (->
       @scroll.set(number) if !@get('isDestroyed') && number = @get('controller.lineNumber')
