@@ -21,23 +21,23 @@ require 'log'
 
     init: ->
       @_super.apply(this, arguments)
+      @createEngine()
 
     rerender: ->
       @_super.apply(this, arguments)
       @createEngine()
 
-    didInsertElement: ->
-      @createEngine()
-      @observeParts()
-      @lineNumbers()
-      @scroll.set(@get('controller.lineNumber'))
-      @folds()
-
     createEngine: ->
       @scroll = new Log.Scroll
       @limit  = new Log.Limit
-      @propertyDidChange('isLimited')
       @engine = Log.create(listeners: [@limit, new Log.FragmentRenderer, new Log.Folds, @scroll])
+
+      @observeParts()
+      @lineNumberOnHover()
+      @foldOnClick()
+
+      @propertyDidChange('isLimited')
+      @scroll.set(@get('controller.lineNumber'))
 
     observeParts: ->
       console.log(@get('job'))
@@ -80,11 +80,11 @@ require 'log'
       Travis.app.tailing.toggle()
       event.preventDefault()
 
-    lineNumbers: ->
+    lineNumberOnHover: ->
       $('#log').on 'mouseenter', 'a', ->
         $(this).attr('href', '#L' + ($(this.parentNode).prevAll('p').length + 1))
 
-    folds: ->
+    foldOnClick: ->
       $('#log').on 'click', '.fold', ->
         $(this).toggleClass('open')
 

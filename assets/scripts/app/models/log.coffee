@@ -17,7 +17,6 @@ require 'travis/model'
     Travis.Log.Request.create(id: id, handlers: handlers).run() if id = @get('job.id')
 
   clear: ->
-    console.log("clear log!")
     @set('parts', Ember.ArrayProxy.create(content: []))
     @incrementProperty('version')
 
