@@ -40,9 +40,6 @@ require 'log'
       @scroll.set(@get('controller.lineNumber'))
 
     observeParts: ->
-      console.log(@get('job'))
-      console.log(@get('log'))
-      console.log(@get('log.parts'))
       parts = @get('log.parts')
       parts.addArrayObserver(@, didChange: 'partsAdded', willChange: ->)
       @partsAdded(parts.slice(0))
